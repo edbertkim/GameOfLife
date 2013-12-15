@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<body onload="onInit()" bgcolor="#383838">
+	<br /><br />
+	<div style="width: 550px; margin: 0 auto;">
+		<canvas id="myCanvas" width="550" height="550">
+			This browser does not support the HTML5 canvas tag. Try to download <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a>
+		</canvas><br/>
+		<div style="float: right">
+			<button id="anim" onclick="animateOn()">Play</button>
+			<button id="pauseBtn" onclick="animateOff()">Pause</button>
+			<button onclick="animateNext()">Next</button>
+			<button onclick="clean()">Clear</button>
+			<button onclick="makePatern()">Patterns</button>
+			<label style="color: white;"><font size="1">&#169; Edbert Kim G. Ara&#241;a</font></label>
+			<button id="colorIt" onclick="colorIt()">*</button>
+		</div>
+	</div>
+
+<script>
+<!-- Disable  
+function disableselect(e){  
+return false  
+}  
+
+function reEnable(){  
+return true  
+}  
+
+//if IE4+  
+document.onselectstart=new Function ("return false")  
+document.oncontextmenu=new Function ("return false")  
+//if NS6  
+if (window.sidebar){  
+document.onmousedown=disableselect  
+document.onclick=reEnable  
+}  
+//-->  
+var b;
+var t;
+var isMouseDown = false;
+var isUnselect = false;
+var isAnimate = false;
+var isColor = 0;
+var pattern = 0;
+//mousemove
+
+function onInit(){
+	var c=document.getElementById("myCanvas");
+	document.getElementById("colorIt").style.backgroundColor = '#FFFFFF';
+	var ctx=c.getContext("2d");
+
+	c.addEventListener('mousedown', function(e) { isMouseDown = true; 
+		lastDownTarget = e.target;
+		mouseX = e.offsetX; mouseY = e.offsetY;
+		switch (event.which) {
+	        case 3:
+	            isUnselect = true;
+	            break;
+	    }
+		mouseInput(mouseX, mouseY);
+	}, false);
+	c.addEventListener('mouseup', function(e) { isMouseDown = false; }, false);
+	c.addEventListener('mousemove', function(e) {
+	        lastDownTarget = e.target;
+	        mouseX = e.offsetX; mouseY = e.offsetY;
+	        if(isMouseDown) mouseInput(mouseX, mouseY);
+	}, false);	
+
+	b = new Array(50);
+	t = new Array(50);
+	for (var i = 0; i < 50; i++) {
+		b[i] = new Array(50);
+		t[i] = new Array(50);
+	}
+
+	clean();
+	draw(ctx, c);
+}
+
+function clean(){
+	for (var i = 0; i < 50; i++) 
+		for (var j = 0; j < 50; j++) {
+			b[i][j] = 0;
+			t[i][j] = 0;
+		}
+}
+
+function animateOn(){
+	isAnimate = true;
+	document.getElementById("anim").disabled = true;
+	document.getElementById("pauseBtn").disabled = false;
+}
+
+function animateOff(){
+	isAnimate = false;
+	document.getElementById("anim").disabled = false;
+}
+
+function animateNext(){
+	isAnimate = false;
+	animate();
+	document.getElementById("anim").disabled = false;
+}
+
+function makePatern(){
+	clean();
+
+	if(pattern == 0){
+		b[19][6] = 1; b[19][7] = 1; b[20][6] = 1; b[20][7] = 1; b[20][16]  = 1; b[19][16] = 1; b[21][16] = 1; b[18][17] = 1; b[22][17] = 1; b[17][18] = 1;
+		b[17][19] = 1; b[23][18] = 1; b[23][19] = 1; b[20][20] = 1; b[18][21] = 1; b[22][21] = 1; b[19][22] = 1; b[20][22] = 1; b[21][22] = 1; b[20][23] = 1;
+		b[19][26] = 1; b[18][26] = 1; b[17][26] = 1; b[17][27] = 1; b[18][27] = 1; b[19][27] = 1; b[20][28] = 1; b[16][28] = 1; b[16][30] = 1; b[15][30] = 1;
+		b[20][30] = 1; b[21][30] = 1; b[24][29] = 1; b[25][30] = 1; b[25][31] = 1; b[26][30] = 1; b[26][29] = 1; b[17][40] = 1; b[18][40] = 1; b[18][41] = 1;
+		b[17][41] = 1; 	b[32][38] = 1; b[33][38] = 1; b[33][37] = 1; b[34][37] = 1; b[32][36] = 1;
+		pattern = 1;
+	} else if(pattern == 1){
+		for(var i=0; i<50; i++)
+			b[i][25] = 1;
+		pattern = 2;
+	} else if(pattern == 2){
+		b[21][26]=1; b[20][26]=1; b[20][27]=1; b[21][28]=1; b[22][28]=1; b[22][27]=1; b[22][27]=1; b[20][24]=1; b[21][24]=1; b[20][23]=1; b[21][22]=1; b[22][22]=1;
+		b[22][23]=1; b[24][27]=1; b[24][28]=1; b[25][28]=1; b[25][26]=1; b[26][26]=1; b[26][27]=1; b[25][24]=1; b[26][24]=1; b[26][23]=1; b[25][22]=1; b[24][22]=1 
+		b[24][23]=1; b[18][27]=1; b[18][27]=1; b[18][28]=1; b[17][28]=1; b[16][28]=1; b[18][23]=1; b[18][22]=1; b[17][22]=1; b[16][22]=1; b[28][23]=1; b[28][22]=1;
+		b[29][22]=1; b[30][22]=1; b[28][27]=1; b[28][27]=1; b[28][28]=1; b[29][28]=1; b[30][28]=1; b[26][30]=1; b[25][30]=1; b[26][31]=1; b[26][32]=1; b[21][30]=1;
+		b[20][30]=1; b[20][31]=1; b[20][32]=1; b[21][20]=1; b[20][20]=1; b[20][19]=1; b[20][18]=1; b[25][20]=1; b[26][20]=1; b[26][19]=1; b[26][18]=1; 
+		pattern = 3;
+	} else if(pattern == 3){
+		for(var i=0; i<50; i++)
+			for(var j=0; j<50; j++){
+				if((j%2) == 0 && (i%2) == 0) b[i][j] = 1;
+				if((j%2) != 0 && (i%2) != 0) b[i][j] = 1;
+			}
+		pattern = 4;
+	} else if(pattern == 4){
+		b[18][13]=1; b[19][13]=1; b[20][13]=1; b[21][13]=1; b[21][13]=1; b[22][13]=1; b[24][13]=1; b[24][13]=1; b[23][13]=1; b[25][13]=1; b[26][13]=1; b[28][13]=1;
+		b[27][13]=1; b[27][13]=1; b[24][14]=1; b[23][15]=1; b[23][15]=1; b[22][16]=1; b[21][17]=1; b[21][17]=1; b[20][18]=1; b[19][19]=1; b[24][16]=1; b[24][16]=1;
+		b[25][17]=1; b[26][18]=1; b[26][18]=1; b[27][19]=1; b[27][19]=1; b[22][24]=1; b[23][24]=1; b[24][24]=1; b[25][24]=1; b[26][24]=1; b[27][24]=1; b[19][24]=1;
+		b[22][29]=1; b[23][29]=1; b[24][29]=1; b[25][29]=1; b[26][29]=1; b[27][29]=1; b[23][30]=1; b[22][31]=1; b[23][32]=1; b[24][33]=1; b[25][33]=1; b[26][33]=1;
+		b[27][33]=1; b[23][34]=1; b[23][35]=1; b[24][36]=1; b[25][36]=1; b[26][36]=1; b[27][36]=1; b[27][36]=1; b[28][36]=1; b[28][36]=1;
+		pattern = 0;
+	}
+}
+
+function colorIt(){
+	if(isColor == 0){
+		isColor = 1;
+		document.getElementById("colorIt").style.backgroundColor = '#00FF00';
+	}else if(isColor == 1){
+		document.getElementById("colorIt").style.backgroundColor = '#00FFFF';
+		isColor = 2;
+	}else if(isColor == 2){
+		document.getElementById("colorIt").style.backgroundColor = '#FFFFFF';
+		isColor = 0;
+	}
+}
+
+function animate(){
+	for (var i = 0; i < 50; i++) 
+		for (var j = 0; j < 50; j++)
+			t[i][j] = 0;
+
+	for (var i = 0; i < 50; i++) 
+		for (var j = 0; j < 50; j++){
+			var ctr=0;
+			if((i-1) >= 0 && (j-1) >= 0) if( b[i-1][j-1] == 1 ) ctr++;
+			if((i-1) >= 0 && (j+1) < 50) if( b[i-1][j+1] == 1 ) ctr++;
+			if((i-1) >= 0) if( b[i-1][j] == 1 ) ctr++;
+			if((j-1) >= 0) if( b[i][j-1] == 1 ) ctr++;
+			if((j+1) < 50) if( b[i][j+1] == 1 ) ctr++;
+			if((i+1) < 50) if( b[i+1][j] == 1 ) ctr++;
+			if((i+1) < 50 && (j+1) < 50) if( b[i+1][j+1] == 1 ) ctr++;
+			if((i+1) < 50 && (j-1) >= 0) if( b[i+1][j-1] == 1 ) ctr++;
+
+			if(b[i][j] == 1){
+				if(ctr != 2 && ctr != 3)
+					t[i][j] = 0;
+				else
+					t[i][j] = 1;
+			} else {
+				if(ctr == 3)
+					t[i][j] = 1;
+			}
+		}
+
+	for (var i = 0; i < 50; i++) 
+		for (var j = 0; j < 50; j++)
+			b[i][j] = t[i][j];
+}
+
+function draw(ctx, c){
+	var w=0;
+	var h=0;
+	ctx.clearRect(0, 0, c.width, c.height);
+
+	for (var i = 0; i < 50; i++) {
+		for (var j = 0; j < 50; j++) {
+			if(b[i][j] == 0)
+				ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+			else if(isColor == 0)
+				ctx.fillStyle = "rgba(225, 225, 225, 1.0)";
+			else if(isColor == 1)
+				ctx.fillStyle = "rgba(0, "+Math.floor((Math.random()*225)+1)+", 0, 1.0)";
+			else if(isColor == 2)
+				ctx.fillStyle = "rgba("+Math.floor((Math.random()*225)+1)+", "+Math.floor((Math.random()*225)+1)+", "+Math.floor((Math.random()*225)+1)+", 1.0)";
+
+			ctx.fillRect (w, h, 10, 10);
+			w+=11;
+		}
+		w=0;
+		h+=11;
+	}
+	
+	if(isAnimate)
+		animate();
+	else
+		document.getElementById("pauseBtn").disabled = true;
+
+	requestAnimFrame(function() {
+		draw(ctx, c);
+	});
+}
+
+function mouseInput(x, y){
+	var w=0; var h=0;
+
+	for (var i = 0; i < 50; i++) {
+		for (var j = 0; j < 50; j++) {
+			if((w < x) && (w+11) > x && (w < x) && (w+11) > x && (h < y) && (h+11) > y && (h < y) && (h+11) > y){
+				if(b[i][j] == 0)
+					b[i][j] = 1;
+				else if(isUnselect){
+					b[i][j] = 0;
+					isUnselect = false;
+				}
+				console.log(i + ':' + j);
+			}
+			w+=11;
+		}
+		w=0;
+		h+=11;
+	}
+}
+
+window.requestAnimFrame = (function(callback) {
+	return 	window.requestAnimationFrame || 
+			window.webkitRequestAnimationFrame || 
+			window.mozRequestAnimationFrame || 
+			window.oRequestAnimationFrame || 
+			window.msRequestAnimationFrame ||
+	function(callback) {
+	  window.setTimeout(callback, 1);
+	};
+})();
+
+</script>
+
+</body>
+</html>
